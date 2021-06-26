@@ -1,0 +1,57 @@
+// eslint-disable
+// this is an auto generated file. This will be overwritten
+
+export const getUser = `query GetUser(
+  $limit: Int
+  $nextToken: String
+  $animals: Boolean
+  $readings: Boolean
+) {
+  getUser(
+    limit: $limit
+    nextToken: $nextToken
+    animals: $animals
+    readings: $readings
+  ) {
+    d1Items {
+      pk
+      vid
+      sk
+    }
+  }
+}
+`;
+export const linkD1User = `mutation LinkD1User($input: d1User) {
+  linkD1User(input: $input) {
+    pk
+    vid
+    sk
+    config {
+      pk
+      factor
+      nait
+      naitNo
+      naitUser
+      var1
+      var2
+      var3
+      var4
+    }
+    animals {
+      nextToken
+    }
+  }
+}
+`;
+export const createStripeSubscription = `mutation CreateStripeSubscription($input: StripeInput) {
+  createStripeSubscription(input: $input) {
+    items
+  }
+}
+`;
+export const cancelStripeSubscription = `mutation CancelStripeSubscription($cancel: Boolean) {
+  cancelStripeSubscription(cancel: $cancel) {
+    items
+  }
+}
+`;

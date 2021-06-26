@@ -1,0 +1,219 @@
+type Animal {
+    device: String
+    vid: String
+    group: String
+    id: String
+    nait: Boolean
+    var1: String
+    var2: String
+    var3: String
+    var4: String
+    var5: String
+    naitNo: String
+    readings(
+        limit: Int,
+        nextToken: String,
+        scanIndex: Boolean,
+        id: String
+    ): ReadingCollection
+}
+
+type AnimalCollection {
+    items: [Animal]
+    nextToken: String
+}
+
+input AnimalInput {
+    vid: String
+    id: String!
+    group: String
+    device: String!
+}
+
+type Device {
+    id: String
+    type: String
+    nait: Boolean
+    naitNo: String
+    naitUser: String
+    var1: String
+    var2: String
+    var3: String
+    var4: String
+    var5: String
+}
+
+input DeviceInput {
+    id: String!
+    nait: Boolean
+    naitNo: String
+    naitUser: String
+    naitPassword: String
+}
+
+type DeviceRegister {
+    displayName: String
+    id: String!
+    uid: String!
+}
+
+input DeviceRegisterInput {
+    displayName: String
+    id: String!
+    uid: String
+}
+
+input MovementInput {
+    receivingNaitNumber: String
+    dateMovement: String
+    items: [Movements]
+}
+
+
+
+type MovementOutcome {
+    outcome: Boolean
+    device: String
+    response: String
+}
+
+input Movements {
+    device: String
+    rfids: [String]
+}
+
+input NocanMsg {
+    device: String
+    channel: String
+    value: String
+}
+
+type NocanMsgResult @aws_api_key {
+    device: String
+    channel: String
+    value: String
+}
+
+type NocanResult {
+    items: String
+}
+
+type Mutation {
+    createDeviceRegister(input: DeviceRegisterInput): DeviceRegister
+    createSettings(input: SettingInput): Settings
+    deleteDeviceRegister(id: String!): DeviceRegister
+    updateDeviceRegister(id: String!): DeviceRegister
+    updateDevice(input: DeviceInput): Device
+    updateSetting(input: SettingInput): Settings
+    updateAnimal(input: AnimalInput): Animal
+    updateAnimals(input: [AnimalInput]): [Animal]
+    createNaitMovement(input: MovementInput): SOAPResults
+    createNaitRegistration(input: RegistrationInput): SOAPResults
+    createStripeSubscription(input: StripeInput): StripeResult
+    cancelStripeSubscription(cancel: Boolean): StripeResult
+    sendNocanMsg(input: NocanMsg): NocanResult
+    receiveNocanMsg(input: NocanMsg ): NocanMsgResult
+        @aws_api_key
+}
+
+type Subscription {
+	nocanMsgReceived(device:String): NocanMsgResult
+	    @aws_subscribe(mutations: ["receiveNocanMsg"])
+}
+
+type Query {
+    getAnimal(id: String!, device: String!): Animal 
+    getSetting(id: String): Settings
+    getSettings(limit: Int, nextToken: String): SettingsCollection
+    getUserInfo(limit: Int, nextToken: String, id: String): UserInfoCollection
+    getDeviceReadings(limit: Int, nextToken: String, id: String): ReadingCollection
+    getDevice(id: String): Device
+    checkNaitUser(input: naitUserInput): naitUser
+}
+
+type Reading {
+    device: String
+    id: Int
+    rfid: String
+    var1: String
+    var2: String
+    var3: String
+    var4: String
+    var5: String
+}
+
+type ReadingCollection {
+    items: [Reading]
+    nextToken: String
+}
+
+input RegistrationInput {
+    dateOfBirth: String
+    animalType: String
+    productionType: String
+    items: [Registrations]
+}
+
+input Registrations {
+    device: String
+    rfids: [String]
+}
+
+input StripeInput{
+    email: String
+    elements: String
+}
+
+type StripeResult {
+    items: String
+}
+
+type SOAPResults {
+    items: [MovementOutcome]
+}
+
+type Settings {
+    id: String!
+    setting: Boolean
+    type: String
+    uid: String
+}
+
+type SettingsCollection {
+    items: [Settings]
+    nextToken: String
+}
+
+input SettingInput {
+    id: String!
+    setting: Boolean
+    type: String
+    uid: String
+}
+
+type UserInfoCollection {
+    items: [product]
+}
+
+type naitUser {
+    user: String
+}
+
+input naitUserInput {
+    username: String
+    password: String
+    naitNo: String
+}
+
+type product {
+    displayName: String
+    id: String!
+    device: Device
+    readings(limit: Int, nextToken: String, scanIndex: Boolean): ReadingCollection
+    animals(
+        id: String,
+        limit: Int,
+        nextToken: String,
+        scanIndex: Boolean
+    ): AnimalCollection
+}

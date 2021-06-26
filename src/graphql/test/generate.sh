@@ -1,0 +1,1 @@
+amplify-graphql-docs-generator --schema ./schema.json --output all-operations.graphql --language javascript
