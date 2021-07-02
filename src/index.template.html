@@ -17,6 +17,91 @@
   </head>
   <body>
     <!-- DO NOT touch the following DIV -->
+    <div id="notification">A new version of this app is available. <a id="reload">Click here to update.</a></div>
     <div id="q-app"></div>
   </body>
+  <script>
+  let newWorker;
+
+  // The click event on the notification
+  document.getElementById('reload').addEventListener('Click', function(){
+    newWorker.postMessage({ action: 'skipWaiting' });
+  });
+
+  if ('serviceWorker' in navigator) {
+    // Register the service worker
+    navigator.serviceWorker.register('./service-worker.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+
+        // An updated service worker has appeared in reg.installing!
+        newWorker = reg.installing;
+
+        newWorker.addEventListener('statechange', () => {
+
+          // Has service worker state changed?
+          switch (newWorker.state) {
+            case 'installed':
+            if (navigator.serviceWorker.controller) {
+              document.getElementById('notification').className = "show";
+            }
+            break;
+          }
+        });
+      });
+    });
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (refreshing) return;
+      window.location.reload();
+      refreshing = true;
+    });
+  }
+
+</script>
+<style>
+#notification {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #4e5c88;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: -3px;
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#notification.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
 </html>
